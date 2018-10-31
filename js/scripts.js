@@ -1,13 +1,14 @@
+
 function Game() {
   this.players = [],
-    this.losers = [],
-}
+    this.losers = []
+};
 
 
 Game.prototype.turn = function(player) {
+  debugger;
   console.log("It is " + player.name + "'s turn!!!");
   itsYourTurn(player);
-  debugger;
 
   var rollAgain = true;
   var input = "";
@@ -15,41 +16,44 @@ Game.prototype.turn = function(player) {
   while (rollAgain) {
     player.roll();
     if (player.rollCheck()) {
-      console.log(player.name + ", Congrats! you rolled a 1!")
+      console.log(player.name + ", Congrats! you rolled a 1!");
       congratsA1(player);
-
-
       player.rollingScore = 0;
-      console.log(player.name + "'s Total Score: " + player.totalScore)
+      console.log(player.name + "'s Total Score: " + player.totalScore);
+      scoreUpdate(player);
       break;
     } else {
       player.rollingScore += player.lastRoll;
-      if (player.totalScore + player.rollingScore >= 10) {
-        console.log("you suck")
+      if (player.totalScore + player.rollingScore >= 100) {
+        console.log("you suck");
+        loser(player);
         this.losers.push(player);
         var indexToRemove = this.players.indexOf(player);
         this.players.splice(indexToRemove, 1);
         break;
       }
     }
-    input = prompt("Would you like to roll again? (true or false only!)")
+    input = prompt("Would you like to roll again? (true or false only!)");
     if (!input) {
       player.updateTotalScore();
-      console.log(player.name + "'s Current total score: " + player.totalScore)
+      console.log(player.name + "'s Current total score: " + player.totalScore);
+      scoreUpdate(player);
+
       break;
     }
   }
-}
+};
 
 Game.prototype.addPlayer = function(player) {
   this.players.push(player);
-}
+};
 
 Game.prototype.play = function() {
   var keepGoing = true;
   while (keepGoing) {
     if (this.players.length === 1) {
       console.log(this.players[0].name + ", you win!!!!");
+      winner(this.players[0]);
       break;
     } else {
       for (var i = 0; i < this.players.length; i++) {
@@ -57,23 +61,24 @@ Game.prototype.play = function() {
       }
     }
   }
-}
+};
 
 
 
-function Player(name) {
+function Player(name, id) {
   this.totalScore = 0,
     this.rollingScore = 0,
     this.lastRoll = 0,
-    this.name = name
-}
+    this.name = name,
+    this.id = id
+};
 
 
 Player.prototype.roll = function() {
   var roll = Math.floor(6 * Math.random()) + 1;
   console.log(this.name + " rolled a: " + roll)
   this.lastRoll = roll;
-}
+};
 
 Player.prototype.rollCheck = function() {
   // rollCheck is to check value of roll
@@ -84,18 +89,18 @@ Player.prototype.rollCheck = function() {
   else if (this.lastRoll === 1) {
     return true;
   }
-}
+};
 
 Player.prototype.addRoll = function() {
   // add value of this.roll add to rollingScore
   this.rollingScore += this.lastRoll;
-}
+};
 
 Player.prototype.updateTotalScore = function() {
   // this players total should be updated by its rolling score
   this.totalScore = this.rollingScore;
   this.rollingScore = 0;
-}
+};
 
 
 //
@@ -118,31 +123,58 @@ Player.prototype.updateTotalScore = function() {
 // }
 //
 function itsYourTurn(player) {
-  if (pigDice.players.indexOf(player) === 0) {
-    $("#player1").html("<li>" + "It's your turn " + player.name + "!" + "</li>")
-  } else(pigDice.players.indexOf(player) === 1) {
-    $("#player2").html("<li>" + "It's your turn " + player.name + "!" + "</li>")
-  };
+  if (player.id === 0) {
+    $("#player1").html("<li>" + "It's your turn " + player.name + "!" + "</li>");
+  } else if (player.id === 1) {
+    $("#player2").html("<li>" + "It's your turn " + player.name + "!" + "</li>");
+  }
+};
 
-  function congratsA1(player) {
-    if (pigDice.players.indexOf(player) === 0) {
-      $("#player1").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>")
-    } else(pigDice.players.indexOf(player) === 1) {
-      $("#player2").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>")
-    }
-  };
+function congratsA1(player) {
+  if (player.id === 0) {
+    $("#player1").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>");
+  } else if (player.id === 1) {
+    $("#player2").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>");
+  }
+};
+
+function scoreUpdate(player) {
+  if (player.id === 0) {
+    $("#player1").html("<li>" + player.name + ", your total is: " + player.totalScore + "</li>");
+  } else if (player.id === 1) {
+    $("#player2").html("<li>" + player.name + ", your total is: " + player.totalScore + "</li>");
+  }
+};
+
+function loser(player) {
+  // MAKE SURE YOU PASS A PLAYER OBJECT INTO THIS FUCNTION. NO OTHER TYPE OF OBJECT WILL WORK
+  if (player.id === 0) {
+    $("#player1").html("<li>" + player.name + ", you're a LOSER" + "</li>");
+  } else if (player.id === 1) {
+    $("#player2").html("<li>" + player.name + ", you're a LOSER" + "</li>");
+  }
+};
+
+function winner(player) {
+  if (player.id === 0) {
+    $("#player1").html("<li>" + player.name + ", you're a WINNER" + "</li>");
+  } else if (player.id === 1) {
+    $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
+  }
+};
+
   // --------------------------------------------------------------------------------
-  var pigDice = new Game();
-  var player1 = new Player("Rob");
-  var player2 = new Player("Brooke");
-  pigDice.addPlayer(player1);
-  pigDice.addPlayer(player2);
-  console.log("Hello " + player1.name + " and " + player2.name);
-  // loop will start here
-  pigDice.play();
+var pigDice = new Game();
+var player1 = new Player("Rob", 0);
+var player2 = new Player("Brooke", 1);
+pigDice.addPlayer(player1);
+pigDice.addPlayer(player2);
+console.log("Hello " + player1.name + " and " + player2.name);
+// loop will start here
+pigDice.play();
 
-  $(function() {
+$(function() {
 
 
 
-  });
+});
