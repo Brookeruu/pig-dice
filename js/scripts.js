@@ -27,6 +27,7 @@ Game.prototype.turn = function(player) {
         this.losers.push(player);
         var indexToRemove = this.players.indexOf(player);
         this.players.splice(indexToRemove, 1);
+        break;
       }
     }
     input = prompt("Would you like to roll again? (true or false only!)")
@@ -45,9 +46,13 @@ Game.prototype.addPlayer = function(player) {
 Game.prototype.play = function() {
   var keepGoing = true;
   while (keepGoing) {
-    for (var i = 0; i < this.players.length; i++) {
-      this.turn(this.players[i]);
-
+    if (this.players.length === 1) {
+      console.log(this.players[0].name + ", you win!!!!");
+      break;
+    } else {
+      for (var i = 0; i < this.players.length; i++) {
+        this.turn(this.players[i]);
+      }
     }
   }
 }
