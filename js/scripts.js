@@ -1,13 +1,12 @@
 function Game() {
   this.players = [],
-    this.currentTurn = this.players[0],
     this.losers = [],
-    this.winner = []
 }
 
 
 Game.prototype.turn = function(player) {
   console.log("It is " + player.name + "'s turn!!!");
+  itsYourTurn(player);
   debugger;
 
   var rollAgain = true;
@@ -17,6 +16,9 @@ Game.prototype.turn = function(player) {
     player.roll();
     if (player.rollCheck()) {
       console.log(player.name + ", Congrats! you rolled a 1!")
+      congratsA1(player);
+
+
       player.rollingScore = 0;
       console.log(player.name + "'s Total Score: " + player.totalScore)
       break;
@@ -115,20 +117,32 @@ Player.prototype.updateTotalScore = function() {
 //
 // }
 //
+function itsYourTurn(player) {
+  if (pigDice.players.indexOf(player) === 0) {
+    $("#player1").html("<li>" + "It's your turn " + player.name + "!" + "</li>")
+  } else(pigDice.players.indexOf(player) === 1) {
+    $("#player2").html("<li>" + "It's your turn " + player.name + "!" + "</li>")
+  };
+
+  function congratsA1(player) {
+    if (pigDice.players.indexOf(player) === 0) {
+      $("#player1").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>")
+    } else(pigDice.players.indexOf(player) === 1) {
+      $("#player2").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>")
+    }
+  };
+  // --------------------------------------------------------------------------------
+  var pigDice = new Game();
+  var player1 = new Player("Rob");
+  var player2 = new Player("Brooke");
+  pigDice.addPlayer(player1);
+  pigDice.addPlayer(player2);
+  console.log("Hello " + player1.name + " and " + player2.name);
+  // loop will start here
+  pigDice.play();
+
+  $(function() {
 
 
-// --------------------------------------------------------------------------------
-var pigDice = new Game();
-var player1 = new Player("Rob");
-var player2 = new Player("Brooke");
-pigDice.addPlayer(player1);
-pigDice.addPlayer(player2);
-console.log("Hello " + player1.name + " and " + player2.name);
-// loop will start here
-pigDice.play();
 
-$(function() {
-
-
-
-});
+  });

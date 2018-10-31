@@ -1,17 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="css/styles.css" rel="stylesheet" type="text/css">
-    <script src="js/jquery.js"></script>
-    <script src="js/scripts.js"></script>
-    <title></title>
-  </head>
-  <body>
-    <div class="container">
 
+<head>
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="css/styles.css" rel="stylesheet" type="text/css">
+  <script src="js/jquery.js"></script>
+  <script src="js/scripts.js"></script>
+  <title></title>
+</head>
 
+<body>
+  <div class="container">
+    <h1 class="jumbotron">Pig Dice</h1>
+    <div class="row">
+      <div class="col-md-offset-4 col-md-4">
 
+        <form class="" action="index.html" method="post">
+          <div class="form-group">
+            <label for="playerName">Enter your name:</label>
+            <input class="form-control" id="playerName" type="text">
+          </div>
+          <button type="submit" id="submitName" class="btn btn-info">Submit</button>
+        </form>
+      </div>
     </div>
-  </body>
+
+    <div class="row">
+      <div class="col-md-6 well">
+        <h2>PLayer 1</h2>
+        <ul id="player1">
+
+        </ul>
+      </div>
+      <div class="col-md-6 well">
+        <h2>Player 2</h2>
+        <ul id="player2">
+
+        </ul>
+      </div>
+    </div>
+
+
+
+  </div>
+</body>
+
 </html>
