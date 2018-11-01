@@ -1,9 +1,17 @@
 
 function Game() {
   this.players = [],
-    this.losers = []
+  this.currentPlayer = this.players[0]
 };
 
+Game.prototype.switchPlayers = function() {
+  if (this.players.indexOf(this.currentPlayer) + 1 === this.players.length){
+    this.currentPlayer = this.players[0];
+  }
+  else{
+    this.currentPlayer = this.players[this.players.indexOf(this.currentPlayer)+1]
+  }
+}
 
 Game.prototype.playerRollsAOne = function(player) {
   // this function receives a player Object, and returns false to end the loop
@@ -22,32 +30,37 @@ Game.prototype.turn = function(player) {
   var rollAgain = true;
   var response = "";
 
-  while (rollAgain) {
+  // while (rollAgain) {
     // debugger;
     player.roll();
     if (player.rollCheck()) {
       rollAgain = this.playerRollsAOne(player);
       return true;
-    } else {
+    }
+    else {
       player.rollingScore += player.lastRoll;
       if (player.totalScore + player.rollingScore >= 20) {
         console.log(player.name + ", congrats!!!!!!!!!!!!!!!! You dont suck, you win!");
         return false;
       }
+      else {
+          return true;
+      }
     }
-    response = prompt("Would you like to roll again? ('y' or 'n' !)");
-    if (response === "n") {
-      player.updateTotalScore();
-      console.log(player.name + "'s Current total score ========= " + player.totalScore);
-      // scoreUpdate(player);
 
-      rollAgain = false;;
-    } else {
-      rollAgain = true;
-    }
-  }
+  //   response = prompt("Would you like to roll again? ('y' or 'n' !)");
+  //   if (response === "n") {
+  //     player.updateTotalScore();
+  //     console.log(player.name + "'s Current total score ========= " + player.totalScore);
+  //     // scoreUpdate(player);
+  //
+  //     rollAgain = false;;
+  //   } else {
+  //     rollAgain = true;
+  //   }
+  // }
   return true;
-};
+// };
 
 Game.prototype.addPlayer = function(name) {
   // this addPlayer function will receive a string "name", create a player with that name, and add it to the players list
@@ -58,20 +71,13 @@ Game.prototype.addPlayer = function(name) {
 
 Game.prototype.play = function() {
   var keepGoing = true;
-  while (keepGoing) {
-    // debugger;
-    if (this.players.length === 1) {
-      console.log(this.players[0].name + ", you win!!!!");
-      // winner(this.players[0]);
-      keepGoing = false;
+  for (var i = 0; i < this.players.length; i++) {
+    keepGoing = this.turn(this.players[i]);
+    if (!keepGoing){
+      console.log("Game is over!");
+      return true;
     } else {
-      for (var i = 0; i < this.players.length; i++) {
-        keepGoing = this.turn(this.players[i]);
-        if (!keepGoing){
-          console.log("Game is over!");
-          return true;
-        }
-      }
+
     }
   }
 };
