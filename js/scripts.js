@@ -5,10 +5,20 @@ function Game() {
 };
 
 
+Game.prototype.playerRollsAOne = function(player) {
+  // this function receives a player Object, and returns false to end the loop
+  console.log(player.name + ", Congrats! you rolled a 1!");
+  // congratsA1(player);
+  player.rollingScore = 0;
+  console.log(player.name + "'s Total Score: " + player.totalScore);
+  // scoreUpdate(player);
+  return false;
+}
+
 Game.prototype.turn = function(player) {
   console.log("It is " + player.name + "'s turn!!!");
   // itsYourTurn(player);
-
+  debugger;
   var rollAgain = true;
   var response = "";
 
@@ -16,35 +26,33 @@ Game.prototype.turn = function(player) {
     // debugger;
     player.roll();
     if (player.rollCheck()) {
-      console.log(player.name + ", Congrats! you rolled a 1!");
-      // congratsA1(player);
-      player.rollingScore = 0;
-      console.log(player.name + "'s Total Score: " + player.totalScore);
-      // scoreUpdate(player);
-      rollAgain = false;
+      rollAgain = this.playerRollsAOne(player);
+      return true;
     } else {
       player.rollingScore += player.lastRoll;
-      if (player.totalScore + player.rollingScore >= 15) {
-        console.log("you suck");
-        // loser(player);
-        this.losers.push(player);
-        var indexToRemove = this.players.indexOf(player);
-        this.players.splice(indexToRemove, 1);
-        rollAgain = false;
+      if (player.totalScore + player.rollingScore >= 20) {
+        console.log(player.name + ", congrats!!!!!!!!!!!!!!!! You dont suck, you win!");
+        return false;
       }
     }
     response = prompt("Would you like to roll again? ('y' or 'n' !)");
-    if (response = "n") {
+    if (response === "n") {
       player.updateTotalScore();
       console.log(player.name + "'s Current total score ========= " + player.totalScore);
       // scoreUpdate(player);
 
       rollAgain = false;;
+    } else {
+      rollAgain = true;
     }
   }
+  return true;
 };
 
-Game.prototype.addPlayer = function(player) {
+Game.prototype.addPlayer = function(name) {
+  // this addPlayer function will receive a string "name", create a player with that name, and add it to the players list
+  var playerIndex = 0;
+  var player = new Player(name, playerIndex++);
   this.players.push(player);
 };
 
@@ -58,7 +66,11 @@ Game.prototype.play = function() {
       keepGoing = false;
     } else {
       for (var i = 0; i < this.players.length; i++) {
-        this.turn(this.players[i]);
+        keepGoing = this.turn(this.players[i]);
+        if (!keepGoing){
+          console.log("Game is over!");
+          return true;
+        }
       }
     }
   }
@@ -166,16 +178,14 @@ Player.prototype.updateTotalScore = function() {
 
   // --------------------------------------------------------------------------------
 var pigDice = new Game();
-var player1 = new Player("Rob", 0);
-var player2 = new Player("Brooke", 1);
-pigDice.addPlayer(player1);
-pigDice.addPlayer(player2);
-console.log("Hello " + player1.name + " and " + player2.name);
+pigDice.addPlayer("Brooke");
+pigDice.addPlayer("Rob");
+console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].name);
 // loop will start here
-pigDice.play();
+
 
 $(function() {
-
+  var gameOver = pigDice.play();
 
 
 });
