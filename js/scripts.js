@@ -187,5 +187,5 @@ console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].na
 $(function() {
   var gameOver = pigDice.play();
 
-
+  var uistuff = ""
 });
