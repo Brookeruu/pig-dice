@@ -20,14 +20,16 @@ Game.prototype.playerRollsAOne = function(player) {
   // congratsA1(player);
   player.rollingScore = 0;
   console.log(player.name + "'s Total Score: " + player.totalScore);
-  // scoreUpdate(player);
-  this.switchPlayers();
 }
 
 Game.prototype.resetGame = function(){
-  this.players = [];
   this.currentPlayer = this.players[0];
-}
+  this.players.forEach(function(player){
+    player.totalScore = 0;
+    player.rollingScore = 0;
+    player.lastRoll = 0;
+  });
+};
 
 
 Game.prototype.turn = function(player) {
@@ -35,17 +37,17 @@ Game.prototype.turn = function(player) {
   player.roll();
   if (player.rollCheck()) {
     this.playerRollsAOne(player);
-    return true;
+    return "one";
   }
   else {
     player.rollingScore += player.lastRoll;
-    if (player.totalScore + player.rollingScore >= 20) {
+    if (player.totalScore + player.rollingScore >= 100) {
       console.log(player.name + ", congrats!!!!!!!!!!!!!!!! You dont suck, you win!");
       this.resetGame();
       return false;
     }
     else {
-        return true;
+        return "continue";
     }
   }
 };
@@ -112,8 +114,20 @@ Ui.prototype.createHtml = function(wellSelector){
 
 }
 
-Ui.prototype.updatePlayerScore = function(currentPlayer){
+Ui.prototype.youRolledAOne = function(currentPlayerSelector){
+  var currentPlayerOutput = "";
+  currentPlayerOutput += "<li>You rolled a one this round!</li><li>Total Score: " + pigDice.currentPlayer.totalScore + "</li><li>Round Tally: 0</li>";
+  currentPlayerSelector.html(currentPlayerOutput);
+}
 
+Ui.prototype.displayPlayerScore = function(currentPlayerSelector){
+  var currentPlayerOutput = "";
+  currentPlayerOutput += "<li>Total Score: " + pigDice.currentPlayer.totalScore + "</li><li>Round Tally: " + pigDice.currentPlayer.rollingScore + "</li>";
+  currentPlayerSelector.html(currentPlayerOutput);
+}
+
+Ui.prototype.youWin = function(){
+  alert("Congrats " + pigDice.currentPlayer.name + ", your score is: " + pigDice.currentPlayer.totalScore + "you win! Be sure to refresh the page to play again!");
 }
 
 var pigDice = new Game();
@@ -121,20 +135,35 @@ var pigDice = new Game();
 $(function() {
 
   $("#placeForWells").on("click", "button.currentPlayerHold", function(){
-    debugger;
     $(".currentPlayerHold").hide();
     $(".currentPlayerRoll").hide();
     pigDice.currentPlayer.updateTotalScore();
     // display new totalScore
-    
+    var view = new Ui(pigDice);
+    view.displayPlayerScore($("#player" + pigDice.currentPlayer.id + "output"));
     pigDice.switchPlayers();
     $("#player" + pigDice.currentPlayer.id + "output").siblings().show();
   });
 
   $("#placeForWells").on("click", "button.currentPlayerRoll", function(){
-    pigDice.turn(pigDice.currentPlayer);
-    // we need to update/display with new totalScore, and current rolling total
+      var result = pigDice.turn(pigDice.currentPlayer);
+    if (result === "continue"){
+      var view = new Ui(pigDice);
+      view.displayPlayerScore($("#player" + pigDice.currentPlayer.id + "output"));
+    } else if (result === "one"){
+      var view = new Ui(pigDice);
+      view.youRolledAOne($("#player" + pigDice.currentPlayer.id + "output"));
+      $(".currentPlayerHold").hide();
+      $(".currentPlayerRoll").hide();
+      pigDice.switchPlayers();
+      $("#player" + pigDice.currentPlayer.id + "output").siblings().show();
 
+    } else if (!result) {
+      var view = new Ui(pigDice);
+      view.youWin();
+      pigDice.resetGame();
+    }
+    // we need to update/display with new totalScore, and current rolling total
   });
 
   $("#newPlayerForm").submit(function (event){
