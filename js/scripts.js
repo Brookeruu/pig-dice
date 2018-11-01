@@ -26,8 +26,8 @@ Game.prototype.playerRollsAOne = function(player) {
 Game.prototype.resetGame = function(){
   this.players = [];
   this.currentPlayer = this.players[0];
-  })
 }
+
 
 Game.prototype.turn = function(player) {
   console.log("It is " + player.name + "'s turn!!!");
@@ -50,10 +50,12 @@ Game.prototype.turn = function(player) {
 };
 
 Game.prototype.addPlayer = function(name) {
+  debugger;
   // this addPlayer function will receive a string "name", create a player with that name, and add it to the players list
   var playerIndex = 0;
   var player = new Player(name, playerIndex++);
   this.players.push(player);
+  var userInputs = new Ui(this);
 };
 
 
@@ -151,20 +153,22 @@ Player.prototype.updateTotalScore = function() {
 //   if (player.id === 0) {
 //     $("#player1").html("<li>" + player.name + ", you're a WINNER" + "</li>");
 //   } else if (player.id === 1) {
-    $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
+    // $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
 //   }
 // };
 
   // --------------------------------------------------------------------------------
 
 function Ui(game){
-  this.players = game.players,
+  debugger;
+  this.players = game.players
 }
 
 Ui.prototype.createHtml = function(wellSelector){
+  debugger;
   var allPlayersHtml = "";
   this.players.forEach(function(player){
-    allPlayersHtml += "<div class='col-md-3 well'><h2>"player.name"</h2><ul id='player'" + player.id + "'output'></ul><button id='player" + player.id + "hold' type='click'>Hold</button><button id='player" + player.id + "roll' type='click'>Roll</button></div>"
+    allPlayersHtml += "<div class='col-md-3 well'><h2>" + player.name + "</h2><ul id='player" + player.id + "output'></ul><button id='player" + player.id + "hold' type='click'>Hold</button><button id='player" + player.id + "roll' type='click'>Roll</button></div>";
   });
   wellSelector.html(allPlayersHtml);
 }
@@ -172,16 +176,15 @@ Ui.prototype.createHtml = function(wellSelector){
 
 var pigDice = new Game();
 
-console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].name);
-// loop will start here
-
-
 $(function() {
+
+
   $("#newPlayerForm").submit(function (event){
     event.preventDefault();
 
-    pigDice.addPlayer($("#playerName").val())
-    var numberOfPlayers = pigDice.players.length
+    pigDice.addPlayer($("#playerName").val());
+    var view = new Ui(pigDice);
+    view.createHtml($("#placeForWells"));
 
   });
 
