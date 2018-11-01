@@ -1,7 +1,8 @@
 
 function Game() {
   this.players = [],
-  this.currentPlayer = this.players[0]
+  this.currentPlayer = this.players[0],
+  this.playerIndex = 0
 };
 
 Game.prototype.switchPlayers = function() {
@@ -50,21 +51,20 @@ Game.prototype.turn = function(player) {
 };
 
 Game.prototype.addPlayer = function(name) {
-  debugger;
   // this addPlayer function will receive a string "name", create a player with that name, and add it to the players list
-  var playerIndex = 0;
-  var player = new Player(name, playerIndex++);
+  var player = new Player(name, this.playerIndex++);
   this.players.push(player);
   var userInputs = new Ui(this);
+  this.currentPlayer = this.players[0];
 };
 
 
 function Player(name, id) {
   this.totalScore = 0,
-    this.rollingScore = 0,
-    this.lastRoll = 0,
-    this.name = name,
-    this.id = id
+  this.rollingScore = 0,
+  this.lastRoll = 0,
+  this.name = name,
+  this.id = id
 };
 
 
@@ -95,89 +95,47 @@ Player.prototype.updateTotalScore = function() {
   this.totalScore += this.rollingScore;
   this.rollingScore = 0;
 };
-
-
-//
-// Player.prototype.hold = function() {
-//
-// }
-
-// function Cheater(initialScore,name) {
-//   this.totalScore = initialScore,
-//   this.rollingScore = 0,
-//   this.name = name
-// }
-//
-// Cheater.prototype.roll = function() {
-//
-// }
-//
-// Cheater.prototype.hold = function() {
-//
-// }
-// //
-// function itsYourTurn(player) {
-//   if (player.id === 0) {
-//     $("#player1").html("<li>" + "It's your turn " + player.name + "!" + "</li>");
-//   } else if (player.id === 1) {
-//     $("#player2").html("<li>" + "It's your turn " + player.name + "!" + "</li>");
-//   }
-// };
-//
-// function congratsA1(player) {
-//   if (player.id === 0) {
-//     $("#player1").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>");
-//   } else if (player.id === 1) {
-//     $("#player2").html("<li>" + "Congrats " + player.name + ", you rolled a 1!" + "</li>");
-//   }
-// };
-//
-// function scoreUpdate(player) {
-//   if (player.id === 0) {
-//     $("#player1").html("<li>" + player.name + ", your total is: " + player.totalScore + "</li>");
-//   } else if (player.id === 1) {
-//     $("#player2").html("<li>" + player.name + ", your total is: " + player.totalScore + "</li>");
-//   }
-// };
-//
-// function loser(player) {
-//   // MAKE SURE YOU PASS A PLAYER OBJECT INTO THIS FUCNTION. NO OTHER TYPE OF OBJECT WILL WORK
-//   if (player.id === 0) {
-//     $("#player1").html("<li>" + player.name + ", you're a LOSER" + "</li>");
-//   } else if (player.id === 1) {
-//     $("#player2").html("<li>" + player.name + ", you're a LOSER" + "</li>");
-//   }
-// };
-//
-// function winner(player) {
-//   if (player.id === 0) {
-//     $("#player1").html("<li>" + player.name + ", you're a WINNER" + "</li>");
-//   } else if (player.id === 1) {
-    // $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
-//   }
-// };
-
-  // --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//            UI Logic
+// -----------------------------------------------------------------------------
 
 function Ui(game){
-  debugger;
   this.players = game.players
 }
 
 Ui.prototype.createHtml = function(wellSelector){
-  debugger;
   var allPlayersHtml = "";
   this.players.forEach(function(player){
-    allPlayersHtml += "<div class='col-md-3 well'><h2>" + player.name + "</h2><ul id='player" + player.id + "output'></ul><button id='player" + player.id + "hold' type='click'>Hold</button><button id='player" + player.id + "roll' type='click'>Roll</button></div>";
+    allPlayersHtml += "<div class='col-md-" + (12 / pigDice.players.length) + " well'><h2>" + player.name + "</h2><ul id='player" + player.id + "output'></ul><button class='btn btn-info hold currentPlayerHold' type='click'>Hold</button><button class='btn btn-danger roll currentPlayerRoll' type='click'>Roll</button></div>";
   });
   wellSelector.html(allPlayersHtml);
+
 }
 
+Ui.prototype.updatePlayerScore = function(currentPlayer){
+
+}
 
 var pigDice = new Game();
 
 $(function() {
 
+  $("#placeForWells").on("click", "button.currentPlayerHold", function(){
+    debugger;
+    $(".currentPlayerHold").hide();
+    $(".currentPlayerRoll").hide();
+    pigDice.currentPlayer.updateTotalScore();
+    // display new totalScore
+    
+    pigDice.switchPlayers();
+    $("#player" + pigDice.currentPlayer.id + "output").siblings().show();
+  });
+
+  $("#placeForWells").on("click", "button.currentPlayerRoll", function(){
+    pigDice.turn(pigDice.currentPlayer);
+    // we need to update/display with new totalScore, and current rolling total
+
+  });
 
   $("#newPlayerForm").submit(function (event){
     event.preventDefault();
@@ -185,6 +143,8 @@ $(function() {
     pigDice.addPlayer($("#playerName").val());
     var view = new Ui(pigDice);
     view.createHtml($("#placeForWells"));
+    $("#player" + pigDice.currentPlayer.id + "output").siblings().show();
+
 
   });
 
