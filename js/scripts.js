@@ -156,6 +156,20 @@ Player.prototype.updateTotalScore = function() {
 // };
 
   // --------------------------------------------------------------------------------
+
+function Ui(game){
+  this.players = game.players,
+}
+
+Ui.prototype.createHtml = function(wellSelector){
+  var allPlayersHtml = "";
+  this.players.forEach(function(player){
+    allPlayersHtml += "<div class='col-md-3 well'><h2>"player.name"</h2><ul id='player'" + player.id + "'output'></ul><button id='player" + player.id + "hold' type='click'>Hold</button><button id='player" + player.id + "roll' type='click'>Roll</button></div>"
+  });
+  wellSelector.html(allPlayersHtml);
+}
+
+
 var pigDice = new Game();
 
 console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].name);
@@ -163,6 +177,13 @@ console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].na
 
 
 $(function() {
+  $("#newPlayerForm").submit(function (event){
+    event.preventDefault();
+
+    pigDice.addPlayer($("#playerName").val())
+    var numberOfPlayers = pigDice.players.length
+
+  });
 
   //Need to create UI for players that adds them to the game object.
 });
