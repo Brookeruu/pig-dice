@@ -20,47 +20,34 @@ Game.prototype.playerRollsAOne = function(player) {
   player.rollingScore = 0;
   console.log(player.name + "'s Total Score: " + player.totalScore);
   // scoreUpdate(player);
-  return false;
+  this.switchPlayers();
+}
+
+Game.prototype.resetGame = function(){
+  this.players = [];
+  this.currentPlayer = this.players[0];
+  })
 }
 
 Game.prototype.turn = function(player) {
   console.log("It is " + player.name + "'s turn!!!");
-  // itsYourTurn(player);
-  debugger;
-  var rollAgain = true;
-  var response = "";
-
-  // while (rollAgain) {
-    // debugger;
-    player.roll();
-    if (player.rollCheck()) {
-      rollAgain = this.playerRollsAOne(player);
-      return true;
+  player.roll();
+  if (player.rollCheck()) {
+    this.playerRollsAOne(player);
+    return true;
+  }
+  else {
+    player.rollingScore += player.lastRoll;
+    if (player.totalScore + player.rollingScore >= 20) {
+      console.log(player.name + ", congrats!!!!!!!!!!!!!!!! You dont suck, you win!");
+      this.resetGame();
+      return false;
     }
     else {
-      player.rollingScore += player.lastRoll;
-      if (player.totalScore + player.rollingScore >= 20) {
-        console.log(player.name + ", congrats!!!!!!!!!!!!!!!! You dont suck, you win!");
-        return false;
-      }
-      else {
-          return true;
-      }
+        return true;
     }
-
-  //   response = prompt("Would you like to roll again? ('y' or 'n' !)");
-  //   if (response === "n") {
-  //     player.updateTotalScore();
-  //     console.log(player.name + "'s Current total score ========= " + player.totalScore);
-  //     // scoreUpdate(player);
-  //
-  //     rollAgain = false;;
-  //   } else {
-  //     rollAgain = true;
-  //   }
-  // }
-  return true;
-// };
+  }
+};
 
 Game.prototype.addPlayer = function(name) {
   // this addPlayer function will receive a string "name", create a player with that name, and add it to the players list
@@ -68,20 +55,6 @@ Game.prototype.addPlayer = function(name) {
   var player = new Player(name, playerIndex++);
   this.players.push(player);
 };
-
-Game.prototype.play = function() {
-  var keepGoing = true;
-  for (var i = 0; i < this.players.length; i++) {
-    keepGoing = this.turn(this.players[i]);
-    if (!keepGoing){
-      console.log("Game is over!");
-      return true;
-    } else {
-
-    }
-  }
-};
-
 
 
 function Player(name, id) {
@@ -178,20 +151,18 @@ Player.prototype.updateTotalScore = function() {
 //   if (player.id === 0) {
 //     $("#player1").html("<li>" + player.name + ", you're a WINNER" + "</li>");
 //   } else if (player.id === 1) {
-//     $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
+    $("#player2").html("<li>" + player.name + ", you're a WINNER" + "</li>");
 //   }
 // };
 
   // --------------------------------------------------------------------------------
 var pigDice = new Game();
-pigDice.addPlayer("Brooke");
-pigDice.addPlayer("Rob");
+
 console.log("Hello " + pigDice.players[0].name + " and " + pigDice.players[1].name);
 // loop will start here
 
 
 $(function() {
-  var gameOver = pigDice.play();
 
-  var uistuff = ""
+  //Need to create UI for players that adds them to the game object.
 });
