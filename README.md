@@ -1,6 +1,6 @@
 # _[title]_
 
-#### By _**Robert Bruce**_
+#### By _**Brooke Perry & Robert Bruce**_
 
 ## Description
 
